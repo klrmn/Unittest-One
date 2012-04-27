@@ -33,9 +33,18 @@ class TestNewAsserts:
         except AssertionError, e:
             pass
 
-    def test_that_items_are_not_equal(self):
-        Assert.not_equal("a", "b")
-        Assert.not_equal(1, 2)
+    # tests for contains
+    def test_contains_failure_with_message(self):
+        try:
+            Assert.contains("a", "bcd", msg="failure message")
+        except AssertionError as e:
+            Assert.equal(e.msg, "a is not found in bcd. failure message")
+
+    def test_contains_failure_without_message(self):
+        try:
+            Assert.contains("a", "bcd")
+        except AssertionError as e:
+            Assert.equal(e.msg, "a is not found in bcd. ")
 
     def test_that_dict_contain_key(self):
         Assert.contains("key", { 'key': 'value'})
