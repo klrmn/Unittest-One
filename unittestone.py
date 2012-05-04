@@ -26,6 +26,7 @@
 
 from decimal import Decimal
 from unittestzero import Assert as A
+import re
 
 class Assert(A):
 
@@ -66,7 +67,13 @@ class Assert(A):
         assert difference <= variance, "%s is not within %s of %s. %s" % (first, variance, second, msg)
 
     # matches actually uses re.search, rather than re.match, because you can specify begining of string
-    # @classmethod
-    # def matches(self, string, regex, msg=''):
-    #     if (regex is a matcher):
-    #         regex.search(string)
+    @classmethod
+    def matches(self, string, regex, msg=''):
+        if (type(regex).__name__ != "SRE_Pattern"):
+            regex = re.compile(regex)
+        found = regex.search(string)
+        try:
+            self.not_none(found)
+        except AssertionError:
+            raise AssertionError("'%s' did not match '%s'. %s" % 
+                (string, regex.pattern, msg))

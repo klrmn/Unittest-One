@@ -233,17 +233,28 @@ class TestNewAsserts:
             Assert.equal(e.msg, "neither 14.983 nor 14.985 is a round of the other. ")
 
     # tests for matches
-     # use by match if you want to have special flags
+    # use by match if you want to have special flags
     def test_matches_by_match(self):
-        pass
-    def test_matches_by_match_failure(self):
-        pass
-     # if you match by string, provide a r"" or ur"" string
+        matcher = re.compile('ab.*', re.IGNORECASE)
+        Assert.matches("Absolutely", matcher)
+
+    def test_matches_by_match_failure_with_message(self):
+
+        matcher = re.compile('ab.*')
+        try:
+            Assert.matches("Absolutely", matcher, msg="failure message")
+        except AssertionError as e:
+            Assert.equal(e.msg, "'Absolutely' did not match 'ab.*'. failure message")
+
+    # or it will compile the pattern for you
     def test_matches_by_string_begining(self):
-        pass
-    def test_matches_by_string_middle(self):
-        pass
+        Assert.matches('absolutely', '^ab')
+
+    def test_matches_by_string_end(self):
+        Assert.matches('absolutely', 'ly$')
+
     def test_matches_by_string_failure_no_message(self):
-        pass
-    def test_matches_by_string_failure_with_message(self):
-        pass
+        try:
+            Assert.matches('Absolutely', '^sol')
+        except AssertionError as e:
+            Assert.equal(e.msg, "'Absolutely' did not match '^sol'. ")
