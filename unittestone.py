@@ -1,8 +1,28 @@
 #!/usr/bin/env python
 
-# This Source Code Form is subject to the terms of the Mozilla Public
-# License, v. 2.0. If a copy of the MPL was not distributed with this
-# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+# Copyright (C) 2012 Hot Studio
+
+# Project Lead: Leah Klearman
+# Contributing authors: Leah Klearman (lklrmn@gmail.com)
+
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+
 
 from decimal import Decimal
 from unittestzero import Assert as A
@@ -15,6 +35,13 @@ class Assert(A):
             assert needle in haystack
         except AssertionError:
             raise AssertionError('%s is not found in %s. %s' % (needle, haystack, msg))
+
+    @classmethod
+    def does_not_contain(self, needle, haystack, msg=''):
+        try:
+            assert needle not in haystack
+        except AssertionError:
+            raise AssertionError('%s should not be found in %s. %s' % (needle, haystack, msg))
 
     @classmethod
     def rounded(self, first, second, msg=''):
@@ -37,3 +64,9 @@ class Assert(A):
     def nearly(self, first, second, variance=None, msg=''):
         difference = abs(first - second)
         assert difference <= variance, "%s is not within %s of %s. %s" % (first, variance, second, msg)
+
+    # matches actually uses re.search, rather than re.match, because you can specify begining of string
+    # @classmethod
+    # def matches(self, string, regex, msg=''):
+    #     if (regex is a matcher):
+    #         regex.search(string)
