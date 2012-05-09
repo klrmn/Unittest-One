@@ -27,32 +27,9 @@
 import pytest
 from unittestone import Assert
 import re
-
+from testmania.expect import Expectation
 
 class TestNewAsserts:
-
-    # some tests missing in unittestzero
-    def test_that_lists_are_equal(self):
-        Assert.equal(["1","3","7","11"], ["1","3","7","11"])
-
-    def test_that_lists_are_equal_failure(self):
-        try:
-            Assert.equal(["1","3","7","11"], ["1","11","3","7"])
-        except AssertionError, e:
-            pass
-
-    def test_that_dicts_are_equal(self):
-        Assert.equal({ 'key1': 'value1', 'key2': 'value2'}, { 'key1': 'value1', 'key2': 'value2'})
-
-    def test_that_dicts_are_equal_failure(self):
-        try:
-            Assert.equal({ 'key1': 'value1', 'key2': 'value2'}, { 'key1': 'value3', 'key2': 'value4'})
-        except AssertionError, e:
-            pass
-        try:
-            Assert.equal({ 'key1': 'value1', 'key2': 'value2'}, { 'key1': 'value1', 'key3': 'value4'})
-        except AssertionError, e:
-            pass
 
     # tests for contains
     def test_contains_failure_with_message(self):
@@ -66,69 +43,6 @@ class TestNewAsserts:
             Assert.contains("a", "bcd")
         except AssertionError as e:
             Assert.equal(e.msg, "a is not found in bcd. ")
-
-    def test_that_dict_contain_key(self):
-        Assert.contains("key", { 'key': 'value'})
-
-    def test_that_contains_only_looks_at_keys(self):
-        try:
-            Assert.contains("value", { 'key': 'value'})
-        except AssertionError as e:
-            pass
-
-    def test_that_dict_does_not_contain_key(self):
-        try:
-            Assert.contains("key1", { 'key': 'value'})
-        except AssertionError as e:
-            pass
-
-    def test_list_contains_dict(self):
-        dict1 = {
-                'a': 'avalue',
-                'b': 'bvalue',
-                'c': 'cvalue',
-            }
-        dict2 = {
-                'a': 'dvalue',
-                'b': 'evalue',
-                'c': 'fvalue',
-            }
-        dict3 = {
-                'd': 'dvalue',
-                'e': 'evalue',
-                'f': 'fvalue',
-            }
-        list_of_dicts = [ dict1, dict2, dict3 ]
-        Assert.contains(dict1, list_of_dicts)
-        Assert.contains(dict2, list_of_dicts)
-
-    def test_list_contains_dict_failures(self):
-        dict1 = {
-                'a': 'avalue',
-                'b': 'bvalue',
-                'c': 'cvalue',
-            }
-        dict2 = {
-                'a': 'dvalue',
-                'b': 'evalue',
-                'c': 'fvalue',
-            }
-        dict3 = {
-                'd': 'dvalue',
-                'e': 'evalue',
-                'f': 'fvalue',
-            }
-        list_of_dicts = [ dict1, dict2 ]
-        try:
-            Assert.contains( dict3, list_of_dicts)
-        except AssertionError:
-            pass
-        # if it were only looking at keys, this would fail
-        list_of_dicts = [ dict1, dict3 ]
-        try:
-            Assert.contains( dict2, list_of_dicts)
-        except AssertionError:
-            pass
 
     # tests for does_not_contain
     def test_string_does_not_contain_letter(self):
@@ -258,3 +172,85 @@ class TestNewAsserts:
             Assert.matches('Absolutely', '^sol')
         except AssertionError as e:
             Assert.equal(e.msg, "'Absolutely' did not match '^sol'. ")
+
+    # test Assert.complex with Expectation
+    @pytest.mark.xfail(reason="not implemented yet")
+    def test_complex_dict_failure_too_many_keys(self):
+        actual = {
+            'an_integer': 32,
+            'a_string': 'stupendous',
+            'a_float': 14.34,
+            'a_list': 'dog',
+            'a_thing': 'thing'
+        }
+        expected = {
+            'an_integer': Expectation(Assert.nearly, 30, 2,),
+            'a_string': Expectation(Assert.matches, '.*ous$',),
+            'a_float': Expectation(Assert.rounded, 14.342,),
+            'a_list': Expectation(Assert.contains, ['cat', 'dog', 'mouse']),
+        }
+        Assert.equal(actual, expected, msg="not complexly equal")
+
+    @pytest.mark.xfail(reason="not implemented yet")
+    def test_complex_dict_failure_missing_key(self):
+        actual = {
+            'an_integer': 32,
+            'a_string': 'stupendous',
+            'a_list': 'dog',
+        }
+        expected = {
+            'an_integer': Expectation(Assert.nearly, 30, 2,),
+            'a_string': Expectation(Assert.matches, '.*ous$',),
+            'a_float': Expectation(Assert.rounded, 14.342,),
+            'a_list': Expectation(Assert.contains, ['cat', 'dog', 'mouse']),
+        }
+        Assert.equal(actual, expected, msg="not complexly equal")
+
+    @pytest.mark.xfail(reason="not implemented yet")
+    def test_complex_ignore_extra_keys(self):
+        # don't try to do it this way, it doesn't work
+        # this is why we need Assert.complexly that does IGNORE_EXTRA_KEYS
+        actual = {
+            'an_integer': 32,
+            'a_string': 'stupendous',
+            'a_float': 14.34,
+            'a_list': 'dog',
+        }
+        expected = {
+            'a_string': Expectation(Assert.matches, '.*ous$',),
+        }
+        Assert.contains(expected, actual)
+
+    @pytest.mark.xfail(reason="not implemented yet")
+    def test_complex_list_contains_dict(self):
+        dict1 = {
+            'an_integer': 32,
+            'a_string': 'stupendous',
+            'a_float': 14.34,
+            'a_list': 'dog',
+            'a_thing': 'thing'
+        }
+        dict2 = {
+            'key1': 'valuea',
+            'key2': 'valueb',
+            'key3': 'valuec',
+        }
+        dict3 = {
+            'key1': 1,
+            'key2': 2,
+            'key3': 3,
+        }
+        actual = [ dict1, dict2, dict3 ]
+        expected = {
+            'an_integer': Expectation(Assert.nearly, 30, 2,),
+            'a_string': Expectation(Assert.matches, '.*ous$',),
+            'a_float': Expectation(Assert.rounded, 14.342,),
+            'a_list': Expectation(Assert.contains, ['cat', 'dog', 'mouse']),
+        }
+        Assert.contains(expected, actual, msg="expectation in value only")
+        expected = {
+            Expectation(Assert.matches('^\w1$')): Expectation(Assert.less(2)),
+            Expectation(Assert.matches('^\w2$')): Expectation(Assert.more(1)),
+            Expectation(Assert.matches('^\w3$')): 3,
+        }
+        Assert.contains(expected, actual, msg="expectation in key and value")
