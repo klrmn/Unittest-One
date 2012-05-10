@@ -173,6 +173,22 @@ class TestNewAsserts:
         except AssertionError as e:
             Assert.equal(e.msg, "'Absolutely' did not match '^sol'. ")
 
+    # test Assert.between
+    def test_between(self):
+        Assert.between(7, 5, 10)
+
+    def test_between_failure_with_message(self):
+        try:
+            Assert.between(11, 5, 10, msg='failure message')
+        except AssertionError as e:
+            Assert.equal(e.msg, "11 is not between 5 and 10. failure message")
+
+    def test_between_failure_without_message(self):
+        try:
+            Assert.between('along', 'alone', 'allow')
+        except AssertionError as e:
+            Assert.equal(e.msg, "along is not between alone and allow. ")
+
     # test Assert.deep_equals
     def test_deep_equal_failure_extra_keys_with_message(self):
         actual = {
@@ -218,9 +234,72 @@ class TestNewAsserts:
             'an_integer': 32,
             'a_string': 'stupendous',
             'a_float': 14.34,
-            'a_list': 'dog',
+            'a_list': ['cat', 'dog', 'mouse'],
         }
         expected = {
             'a_string': 'stupendous',
         }
         Assert.deep_equal(actual, expected, ignore_extra_keys=True)
+
+    # test iterate
+    def test_iterate_equal(self):
+        dict1 = {
+            'a_string': 'fabulous',
+            'an_int': 42,
+            'a_float': 15.234,
+            'enum_val': 'cat',
+        }
+        dict2 = {
+            'a_string': 'stupendous',
+            'an_int': 76,
+            'a_float': 678.834,
+            'enum_val': 'dog',
+        }
+        dict3 = {
+            'a_string': 'superfluous',
+            'an_int': 85,
+            'a_float': 79.32,
+            'enum_val': 'mouse',
+        }
+        actual = [dict1, dict2, dict3]
+        template = {
+            'a_string': Expectation(Assert.matches, '.*ous$'),
+            'an_int': Expectation(Assert.greater, 0),
+            'a_float': Expectation(Assert.less, 10000),
+            'enum_val': Expectation(Assert.contains, ['cat', 'dog', 'mouse'])
+        }
+        Assert.iterate(Assert.equal, actual, template)
+
+    def test_iterate_deep_equal(self):
+        dict1 = {
+            'a_string': 'fabulous',
+            'an_int': 42,
+            'a_float': 15.234,
+            'enum_val': 'cat',
+            'extra': 'value1'
+        }
+        dict2 = {
+            'a_string': 'stupendous',
+            'an_int': 76,
+            'a_float': 678.834,
+            'enum_val': 'dog',
+            'extra': 'value2'
+        }
+        dict3 = {
+            'a_string': 'superfluous',
+            'an_int': 85,
+            'a_float': 79.32,
+            'enum_val': 'mouse',
+            'extra': 'value3'
+        }
+        actual = [dict1, dict2, dict3]
+        template = {
+            'a_string': Expectation(Assert.matches, '.*ous$'),
+            'an_int': Expectation(Assert.greater, 0),
+            'a_float': Expectation(Assert.less, 10000),
+            'enum_val': Expectation(Assert.contains, ['cat', 'dog', 'mouse'])
+        }
+        Assert.iterate(Assert.deep_equal, actual, template, ignore_extra_keys=True)
+
+    def test_iterate_matches(self):
+        Assert.iterate(Assert.matches, ['stupendous', 'superfluous', 'sanctimonious'], '.*ous$')

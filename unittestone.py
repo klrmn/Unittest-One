@@ -67,6 +67,10 @@ class Assert(A):
         difference = abs(first - second)
         assert difference <= variance, "%s is not within %s of %s. %s" % (first, variance, second, msg)
 
+    @classmethod
+    def between(self, actual, lower, upper, msg=''):
+        assert lower < actual < upper, "%s is not between %s and %s. %s" % (actual, lower, upper, msg)
+
     # matches actually uses re.search, rather than re.match, because you can specify begining of string
     @classmethod
     def matches(self, string, regex, msg=''):
@@ -81,4 +85,11 @@ class Assert(A):
 
     @classmethod
     def deep_equal(self, actual, expected, ignore_extra_keys=False, msg=''):
-        assert_deep_equal(actual, expected, ignore_extra_keys=ignore_extra_keys, msg=msg)            
+        assert_deep_equal(actual, expected, ignore_extra_keys=ignore_extra_keys, msg=msg)
+
+    @classmethod
+    def iterate(self, assertion, the_list, template, **kwargs):
+        if assertion == '':
+            assertion = Assert.equal
+        for item in the_list:
+            assertion(item, template, kwargs)
