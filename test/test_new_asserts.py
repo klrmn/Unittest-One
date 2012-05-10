@@ -173,41 +173,45 @@ class TestNewAsserts:
         except AssertionError as e:
             Assert.equal(e.msg, "'Absolutely' did not match '^sol'. ")
 
-    # test Assert.complex with Expectation
-    @pytest.mark.xfail(reason="not implemented yet")
-    def test_complex_dict_failure_too_many_keys(self):
+    # test Assert.deep_equals
+    def test_deep_equal_failure_extra_keys_with_message(self):
         actual = {
             'an_integer': 32,
             'a_string': 'stupendous',
             'a_float': 14.34,
-            'a_list': 'dog',
+            'a_list': ['cat', 'dog', 'mouse'],
             'a_thing': 'thing'
         }
         expected = {
-            'an_integer': Expectation(Assert.nearly, 30, 2,),
-            'a_string': Expectation(Assert.matches, '.*ous$',),
-            'a_float': Expectation(Assert.rounded, 14.342,),
-            'a_list': Expectation(Assert.contains, ['cat', 'dog', 'mouse']),
+            'an_integer': 32,
+            'a_string': 'stupendous',
+            'a_float': 14.342,
+            'a_list': ['cat', 'dog', 'mouse'],
         }
-        Assert.equal(actual, expected, msg="not complexly equal")
+        try:
+            Assert.deep_equal(actual, expected, msg="not complexly equal")
+        except AssertionError as e:
+            Assert.equal(e.msg, "not complexly equal")
 
-    @pytest.mark.xfail(reason="not implemented yet")
-    def test_complex_dict_failure_missing_key(self):
+    def test_deep_equal_failure_missing_key_without_message(self):
         actual = {
             'an_integer': 32,
             'a_string': 'stupendous',
-            'a_list': 'dog',
+            'a_list': ['cat', 'dog', 'mouse'],
         }
         expected = {
-            'an_integer': Expectation(Assert.nearly, 30, 2,),
-            'a_string': Expectation(Assert.matches, '.*ous$',),
-            'a_float': Expectation(Assert.rounded, 14.342,),
-            'a_list': Expectation(Assert.contains, ['cat', 'dog', 'mouse']),
+            'an_integer': 32,
+            'a_string': 'stupendous',
+            'a_float': 14.342,
+            'a_list': ['cat', 'dog', 'mouse'],
         }
-        Assert.equal(actual, expected, msg="not complexly equal")
+        try:
+            Assert.deep_equal(actual, expected)
+        except AssertionError as e:
+            expected = "expected keys ['a_float'] are absent in actual"
+            Assert.contains(expected, e.msg, )
 
-    @pytest.mark.xfail(reason="not implemented yet")
-    def test_complex_ignore_extra_keys(self):
+    def test_deep_equals_ignore_extra_keys(self):
         # don't try to do it this way, it doesn't work
         # this is why we need Assert.complexly that does IGNORE_EXTRA_KEYS
         actual = {
@@ -217,40 +221,6 @@ class TestNewAsserts:
             'a_list': 'dog',
         }
         expected = {
-            'a_string': Expectation(Assert.matches, '.*ous$',),
-        }
-        Assert.contains(expected, actual)
-
-    @pytest.mark.xfail(reason="not implemented yet")
-    def test_complex_list_contains_dict(self):
-        dict1 = {
-            'an_integer': 32,
             'a_string': 'stupendous',
-            'a_float': 14.34,
-            'a_list': 'dog',
-            'a_thing': 'thing'
         }
-        dict2 = {
-            'key1': 'valuea',
-            'key2': 'valueb',
-            'key3': 'valuec',
-        }
-        dict3 = {
-            'key1': 1,
-            'key2': 2,
-            'key3': 3,
-        }
-        actual = [ dict1, dict2, dict3 ]
-        expected = {
-            'an_integer': Expectation(Assert.nearly, 30, 2,),
-            'a_string': Expectation(Assert.matches, '.*ous$',),
-            'a_float': Expectation(Assert.rounded, 14.342,),
-            'a_list': Expectation(Assert.contains, ['cat', 'dog', 'mouse']),
-        }
-        Assert.contains(expected, actual, msg="expectation in value only")
-        expected = {
-            Expectation(Assert.matches('^\w1$')): Expectation(Assert.less(2)),
-            Expectation(Assert.matches('^\w2$')): Expectation(Assert.more(1)),
-            Expectation(Assert.matches('^\w3$')): 3,
-        }
-        Assert.contains(expected, actual, msg="expectation in key and value")
+        Assert.deep_equal(actual, expected, ignore_extra_keys=True)

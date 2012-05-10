@@ -26,6 +26,7 @@
 
 from decimal import Decimal
 from unittestzero import Assert as A
+from testmania import assert_deep_equal
 import re
 
 class Assert(A):
@@ -77,3 +78,7 @@ class Assert(A):
         except AssertionError:
             raise AssertionError("'%s' did not match '%s'. %s" % 
                 (string, regex.pattern, msg))
+
+    @classmethod
+    def deep_equal(self, actual, expected, ignore_extra_keys=False, msg=''):
+        assert_deep_equal(actual, expected, ignore_extra_keys=ignore_extra_keys, msg=msg)            
