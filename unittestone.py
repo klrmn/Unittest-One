@@ -26,7 +26,7 @@
 
 from decimal import Decimal
 from unittestzero import Assert as A
-from testmania import assert_deep_equal
+from testmania import assert_deep_equal, Expectation as E
 import re
 
 class Assert(A):
@@ -93,3 +93,6 @@ class Assert(A):
             assertion = Assert.equal
         for item in the_list:
             assertion(item, template, kwargs)
+
+class Expectation(E):
+    pass

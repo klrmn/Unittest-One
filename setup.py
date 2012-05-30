@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(name='UnittestOne',
       version='0.1.0',
-      description='A simple Assertion Framework',
+      description='An Assertion Framework for API testing',
       author='Leah Klearman',
       author_email='lklrmn at gmail dot com',
       url='https://github.com/klrmn/Unittest-One',
