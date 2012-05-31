@@ -6,6 +6,8 @@ testmania, required by this module, is covered by the [MIT license](http://www.o
 # Overview #
 This project's intention is to extend the unittestzero package to include methods to verify complex data types found in APIs. The unittestzero project can be found [on github](https://github.com/AutomatedTester/unittest-zero) and it's documentation can be found [here](http://oss.theautomatedtester.co.uk/unittest-zero/epydoc/index.html). The testmania project can be found [on github](https://github.com/nailxx/testmania) and its documentation can be found [here](http://nailxx.github.com/testmania/).
 
+This module works with python 2.6 and 2.7 but not 3.2.
+
 ## Installation ##
 
 This package is not yet available on pypy. Please build it from source.
