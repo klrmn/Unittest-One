@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# Copyright (C) 2012 Hot Studio
+# Copyright (C) 2012 Leah Klearman
 
 # Project Lead: Leah Klearman
 # Contributing authors: Leah Klearman (lklrmn@gmail.com)
@@ -24,10 +24,11 @@
 # THE SOFTWARE.
 
 
+import re
 from decimal import Decimal
+
 from unittestzero import Assert as A
 from testmania import assert_deep_equal, Expectation as E
-import re
 
 class Assert(A):
 
