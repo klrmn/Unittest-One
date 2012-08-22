@@ -48,6 +48,12 @@ class Assert(A):
 
     @classmethod
     def rounded(self, first, second, msg=''):
+        '''Class method. Asserts unless one number is a rounded version of the other.
+        :Args:
+        - first - a number (for example pi to 5 places)
+        - second - another number (for example pi to 6 places)
+        - msg - (optional) message to print with assert
+        '''
         a = Decimal(str(first))
         b = Decimal(str(second))
         variance = Decimal('0.5')
@@ -65,16 +71,37 @@ class Assert(A):
 
     @classmethod
     def nearly(self, first, second, variance=None, msg=''):
+        '''Class method. Asserts if the absolute value of the first parameter minus the second parameter
+        is larger than the variance.
+        :Args:
+        - first - a number
+        - second - another number
+        - variance - the permitted difference between the two values
+        - msg - (optional) message to print with assert
+        '''
         difference = abs(first - second)
         assert difference <= variance, "%s is not within %s of %s. %s" % (first, variance, second, msg)
 
     @classmethod
     def between(self, actual, lower, upper, msg=''):
+        '''Class method. Asserts if actual is not between (not inclusive of) lower and upper values.
+        :Args:
+        - actual - value being checked
+        - lower - lower bound
+        - upper - upper bound
+        - msg - (optional) message to print with assert
+        '''
         assert lower < actual < upper, "%s is not between %s and %s. %s" % (actual, lower, upper, msg)
 
     # matches actually uses re.search, rather than re.match, because you can specify begining of string
     @classmethod
     def matches(self, string, regex, msg=''):
+        '''Class method. Asserts if string does not match regex.
+        :Args:
+        - string - the string to evaluate
+        - regex - regular expression as string or SRE_Pattern
+        - msg - (optional) message to print with assert
+        '''
         if (type(regex).__name__ != "SRE_Pattern"):
             regex = re.compile(regex)
         found = regex.search(string)
@@ -86,10 +113,26 @@ class Assert(A):
 
     @classmethod
     def deep_equal(self, actual, expected, ignore_extra_keys=False, msg=''):
+        '''Class method. Asserts if any of the assertations defiend as the dictionaries values fail.
+        :Args:
+        - actual - dictionary to evaluate
+        - expected - dictionary with the same keys as actual, but with Asserts in the values
+        - ignore_extra_keys - (default False) do not raise error if the actual has more keys than the expected
+
+        For more documentation, see http://nailxx.github.com/testmania/
+        '''
         assert_deep_equal(actual, expected, ignore_extra_keys=ignore_extra_keys, msg=msg)
 
     @classmethod
     def iterate(self, assertion, the_list, template, **kwargs):
+        '''Class method. Performs assertion on each member of the_list against the template.
+        :Args:
+        - assertion - what Assert method (as string) to use (defaults to Assert.equal if empty string)
+        - the_list - list of actual values
+        - template - the thing to compare the list items with (typically the 'second' parameter
+            in Assert methods)
+        - kwargs - any other keyword args that the assertion may take, including msg.
+        '''
         if assertion == '':
             assertion = Assert.equal
         for item in the_list:
