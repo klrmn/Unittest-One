@@ -10,9 +10,7 @@ This module works with python 2.6 and 2.7 but not 3.2.
 
 ## Installation ##
 
-This package is not yet available on pypy. Please build it from source.
-
-(sudo) python setup.py install
+This package is now available on pypi.
 
 ## Example ##
 

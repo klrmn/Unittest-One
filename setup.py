@@ -1,14 +1,14 @@
 from setuptools import setup
 
 setup(name='UnittestOne',
-      version='0.1.0',
+      version='0.1',
       description='An Assertion Framework for API testing',
       author='Leah Klearman',
       author_email='lklrmn at gmail dot com',
       url='https://github.com/klrmn/Unittest-One',
       classifiers=['Development Status :: 3 - Alpha',
                   'Intended Audience :: Developers',
-                  'License :: OSI Approved :: The MIT License (MIT)',
+                  'License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)',
                   'Operating System :: POSIX',
                   'Operating System :: Microsoft :: Windows',
                   'Operating System :: MacOS :: MacOS X',
